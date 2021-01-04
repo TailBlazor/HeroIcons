@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+    <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackageId>TailBlazor.HeroIcons</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Taylor Watson</Authors>
+    <Company></Company>
+    <PackageTags>Blazor; TailBlazorcss; TailBlazor css; tailwind; tailwindcss; icons; heroicons; hero icons; hero-icons;</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/TailBlazor/HeroIcons</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/TailBlazor/HeroIcons</RepositoryUrl>
+    <Description>
+      A blazor component wrapper for hero icons. It allows to switch between outline, and solid. As well as: Icon size, stroke width, and stroke colour. Contains all 226 icons as of Version: 0.4.1
+    </Description>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser"/>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1"/>
+  </ItemGroup>
+  
+</Project>
