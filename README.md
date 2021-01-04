@@ -57,7 +57,12 @@ Parameter | Default Value
 
 Width, Height, and StrokeWidth all take an int.
 
-Stroke takes any tailwind text colour you've added to your project: `text-blue-500`
+Stroke takes any tailwind text colour you've added to your project: `text-blue-500`. The fill is erased when building the SVG and this is put at a class instead. Because this is set as a class inside the `Stroke` variable you can add additional classes to further customize the icon.
+
+`<TailBlazorHeroIcon Stroke="text-purple-300 transform rotate-45" Icon="HeroIcon.Share" />`
+
+By adding the transform rotate-45 to the stroke the icon will also be rotated 45 degrees. You can also add animation classes.
+
 
 IconStyle accepts `.Outline` and `.Solid`
 
