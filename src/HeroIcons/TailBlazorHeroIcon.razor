@@ -30,7 +30,6 @@
             _svgIconComment = $"<!-- TailBlazor.HeroIcon: {EnumExtension.GetEnumDescription(Icon)} (style: {IconStyle.Outline.ToString()}, size: {Height}x{Width}, stroke (colour): {Stroke}, stroke-width: {StrokeWidth}) -->";
         }
 
-        //var wwwroot = NavigationManager.BaseUri;
         XDocument document = XDocument.Load($"wwwroot/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg");
         XElement svg_Element = document.Root;
 
