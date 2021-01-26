@@ -1,15 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <PackageId>TailBlazor.HeroIcons</PackageId>
     <RootNamespace>TailBlazor.HeroIcons</RootNamespace>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Authors>Taylor Watson</Authors>
     <IsPackage>true</IsPackage>
     <PackageTags>Blazor; TailBlazorcss; TailBlazor css; tailwind; tailwindcss; HeroIcon; Hero Icon; Hero Icons; HeroIcons;</PackageTags>
     <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/TailBlazor/HeroIcons</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
@@ -19,19 +20,16 @@
     </Description>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
     <PackageIcon>logo.png</PackageIcon>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
-
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="../../logo.png" Pack="true" PackagePath="">
       <LinkBase>assets</LinkBase>
@@ -40,5 +38,4 @@
       <LinkBase>assets</LinkBase>
     </None>
   </ItemGroup>
-
 </Project>
