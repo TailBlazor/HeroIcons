@@ -33,8 +33,10 @@ namespace TailBlazor.HeroIcons
                 _svgIconComment = $"<!-- TailBlazor.HeroIcon: {EnumExtension.GetEnumDescription(Icon)} (style: {IconStyle.Outline.ToString()}, size: {Height}x{Width}, stroke (colour): {Stroke}, stroke-width: {StrokeWidth}) -->";
             }
 
+            var baseUri = NavigationManager.BaseUri;
+
             XDocument document =
-                XDocument.Load($"{NavigationManager.BaseUri}_content/TailBlazor.HeroIcons/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg");
+                XDocument.Load($"{baseUri}_content/TailBlazor.HeroIcons/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg");
             XElement svg_Element = document.Root;
 
             svg_Element.SetAttributeValue("width", Width);
