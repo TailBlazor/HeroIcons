@@ -15,7 +15,7 @@ namespace TailBlazor.HeroIcons
         [Parameter] public int Width { get; set; } = 24;
         [Parameter] public int Height { get; set; } = 24;
         [Parameter] public int StrokeWidth { get; set; } = 2;
-        [Parameter] public string Stroke { get; set; } = "text-black";
+        [Parameter] public string Class { get; set; }
         [Parameter] public IconStyle IconStyle { get; set; } = IconStyle.Outline;
         [Parameter] public bool EnableComments { get; set; } = false;
 
@@ -25,12 +25,12 @@ namespace TailBlazor.HeroIcons
 
         protected override void OnInitialized()
         {
-            _classStroke += Stroke;
+            _classStroke += Class;
 
             if (EnableComments)
             {
                 // HeroIcon: annotation (style: outlined, size: 64x64, stroke (colour): text-grey-500, stroke-width: 2)
-                _svgIconComment = $"<!-- TailBlazor.HeroIcon: {EnumExtension.GetEnumDescription(Icon)} (style: {IconStyle.Outline.ToString()}, size: {Height}x{Width}, stroke (colour): {Stroke}, stroke-width: {StrokeWidth}) -->";
+                _svgIconComment = $"<!-- TailBlazor.HeroIcon: {EnumExtension.GetEnumDescription(Icon)} (style: {IconStyle.Outline.ToString()}, size: {Height}x{Width}, stroke (colour): {Class}, stroke-width: {StrokeWidth}) -->";
             }
 
             var baseUri = NavigationManager.BaseUri;
