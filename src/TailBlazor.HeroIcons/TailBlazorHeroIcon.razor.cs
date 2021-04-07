@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
+using System.Threading;
+using System.IO;
 
 namespace TailBlazor.HeroIcons
 {
@@ -23,7 +26,7 @@ namespace TailBlazor.HeroIcons
         protected string _svgIcon = "";
         protected string _svgIconComment = "";
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
             _classStroke += Class;
 
@@ -34,9 +37,16 @@ namespace TailBlazor.HeroIcons
             }
 
             var baseUri = NavigationManager.BaseUri;
+            var token = new CancellationToken();
 
-            XDocument document =
-                XDocument.Load($"{baseUri}_content/TailBlazor.HeroIcons/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg");
+            var document = await Task.Run(() => {
+                    return XDocument.Load($"{baseUri}_content/TailBlazor.HeroIcons/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg");
+            });
+
+
+            //XDocument document =
+            //    await XDocument.LoadAsync($"{baseUri}_content/TailBlazor.HeroIcons/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg", LoadOptions.None, token);
+
             XElement svg_Element = document.Root;
 
             svg_Element.SetAttributeValue("width", Width);
