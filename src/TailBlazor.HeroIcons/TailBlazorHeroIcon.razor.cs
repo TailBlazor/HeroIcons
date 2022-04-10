@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components;
 using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
+using System.Net.Http;
 
 namespace TailBlazor.HeroIcons
 {
@@ -36,39 +37,26 @@ namespace TailBlazor.HeroIcons
                 _svgIconComment = $"<!-- TailBlazor.HeroIcon: {EnumExtension.GetEnumDescription(Icon)} (style: {IconStyle.Outline.ToString()}, size: {Height}x{Width}, stroke (colour): {Class}, stroke-width: {StrokeWidth}) -->";
             }
 
-            var baseUri = NavigationManager.BaseUri;
-            var token = new CancellationToken();
-
-            var document = await Task.Run(() => {
-                    return XDocument.Load($"{baseUri}_content/TailBlazor.HeroIcons/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg");
-            });
-
-
-            //XDocument document =
-            //    await XDocument.LoadAsync($"{baseUri}_content/TailBlazor.HeroIcons/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg", LoadOptions.None, token);
-
-            XElement svg_Element = document.Root;
-
-            svg_Element.SetAttributeValue("width", Width);
-            svg_Element.SetAttributeValue("height", Height);
-            svg_Element.SetAttributeValue("stroke", "");
-            svg_Element.SetAttributeValue("class", _classStroke);
-
-            IEnumerable<XElement> descendants = from path in svg_Element.Descendants() select path;
-
-            foreach (XElement path in descendants)
+            var client = new HttpClient();
+            var icon = (await client.GetAsync(NavigationManager.BaseUri + "_content/TailBlazor.HeroIcons/icons/" +
+                                              EnumExtension.GetEnumDescription(IconStyle) + "/" + EnumExtension.GetEnumDescription(Icon) + ".svg"))
+                .Content;
+            await using var stream = await icon.ReadAsStreamAsync();
+            var root = (await XDocument.LoadAsync(stream, LoadOptions.PreserveWhitespace, CancellationToken.None)).Root;
+            root?.SetAttributeValue("width", Width);
+            root?.SetAttributeValue("height", Height);
+            root?.SetAttributeValue("stroke", "");
+            root?.SetAttributeValue("class", _classStroke);
+            foreach (var xelement in root?.Descendants().Select((Func<XElement, XElement>)(path => path)) ??
+                                     new List<XElement>())
             {
-                if (path.Attribute("stroke-width") != null)
-                {
-                    path.SetAttributeValue("stroke-width", StrokeWidth);
-                }
-                if (path.Attribute("fill") != null)
-                {
-                    path.SetAttributeValue("fill", StrokeWidth);
-                }
+                if (xelement.Attribute("stroke-width") != null)
+                    xelement.SetAttributeValue("stroke-width", StrokeWidth);
+                if (xelement.Attribute("fill") != null)
+                    xelement.SetAttributeValue("fill", StrokeWidth);
             }
 
-            _svgIcon = svg_Element.ToString();
+            _svgIcon = root?.ToString();
         }
     }
 }
