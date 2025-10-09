@@ -1,74 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System;
+using System.Reflection;
+using System.Threading;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
-using System.Threading;
-using System.IO;
 
 namespace TailBlazor.HeroIcons
 {
     public class TailBlazorHeroIconBase : ComponentBase
     {
-
-        [Inject] protected NavigationManager NavigationManager { get; set; }
+        private const string ResourcePrefix = "TailBlazor.HeroIcons.icons.";
+        private static readonly Assembly IconAssembly = typeof(TailBlazorHeroIconBase).Assembly;
 
         [Parameter] public HeroIcon Icon { get; set; }
         [Parameter] public int Width { get; set; } = 24;
         [Parameter] public int Height { get; set; } = 24;
         [Parameter] public int StrokeWidth { get; set; } = 2;
-        [Parameter] public string Class { get; set; }
+        [Parameter] public string? Class { get; set; }
         [Parameter] public IconStyle IconStyle { get; set; } = IconStyle.Outline;
-        [Parameter] public bool EnableComments { get; set; } = false;
+        [Parameter] public bool EnableComments { get; set; }
 
-        protected string _classStroke = "stroke-current ";
-        protected string _svgIcon = "";
-        protected string _svgIconComment = "";
+        protected string _svgIcon = string.Empty;
+        protected string _svgIconComment = string.Empty;
 
-        protected override async Task OnInitializedAsync()
+        private string _classStroke = string.Empty;
+
+        protected override async Task OnParametersSetAsync()
         {
-            _classStroke += Class;
+            _classStroke = "stroke-current";
+
+            if (!string.IsNullOrWhiteSpace(Class))
+            {
+                _classStroke += $" {Class}";
+            }
 
             if (EnableComments)
             {
-                // HeroIcon: annotation (style: outlined, size: 64x64, stroke (colour): text-grey-500, stroke-width: 2)
-                _svgIconComment = $"<!-- TailBlazor.HeroIcon: {EnumExtension.GetEnumDescription(Icon)} (style: {IconStyle.Outline.ToString()}, size: {Height}x{Width}, stroke (colour): {Class}, stroke-width: {StrokeWidth}) -->";
+                _svgIconComment = $"<!-- TailBlazor.HeroIcon: {EnumExtension.GetEnumDescription(Icon)} (style: {EnumExtension.GetEnumDescription(IconStyle)}, size: {Height}x{Width}, stroke (colour): {Class}, stroke-width: {StrokeWidth}) -->";
+            }
+            else
+            {
+                _svgIconComment = string.Empty;
             }
 
-            var baseUri = NavigationManager.BaseUri;
-            var token = new CancellationToken();
+            var iconStyleName = EnumExtension.GetEnumDescription(IconStyle);
+            var iconName = EnumExtension.GetEnumDescription(Icon);
+            var resourceName = $"{ResourcePrefix}{iconStyleName}.{iconName}.svg";
 
-            var document = await Task.Run(() => {
-                    return XDocument.Load($"{baseUri}_content/TailBlazor.HeroIcons/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg");
-            });
+            await using var resourceStream = IconAssembly.GetManifestResourceStream(resourceName)
+                ?? throw new InvalidOperationException($"Could not find embedded icon resource '{resourceName}'.");
 
+            var document = await XDocument.LoadAsync(resourceStream, LoadOptions.PreserveWhitespace, CancellationToken.None);
 
-            //XDocument document =
-            //    await XDocument.LoadAsync($"{baseUri}_content/TailBlazor.HeroIcons/icons/{EnumExtension.GetEnumDescription(IconStyle)}/{EnumExtension.GetEnumDescription(Icon)}.svg", LoadOptions.None, token);
+            if (document.Root is null)
+            {
+                throw new InvalidOperationException($"The SVG document for icon '{iconName}' is empty.");
+            }
 
-            XElement svg_Element = document.Root;
+            document.Root.SetAttributeValue("width", Width);
+            document.Root.SetAttributeValue("height", Height);
+            document.Root.SetAttributeValue("stroke", null);
+            document.Root.SetAttributeValue("class", _classStroke);
 
-            svg_Element.SetAttributeValue("width", Width);
-            svg_Element.SetAttributeValue("height", Height);
-            svg_Element.SetAttributeValue("stroke", "");
-            svg_Element.SetAttributeValue("class", _classStroke);
-
-            IEnumerable<XElement> descendants = from path in svg_Element.Descendants() select path;
-
-            foreach (XElement path in descendants)
+            foreach (var path in document.Root.Descendants())
             {
                 if (path.Attribute("stroke-width") != null)
                 {
                     path.SetAttributeValue("stroke-width", StrokeWidth);
                 }
-                if (path.Attribute("fill") != null)
-                {
-                    path.SetAttributeValue("fill", StrokeWidth);
-                }
             }
 
-            _svgIcon = svg_Element.ToString();
+            _svgIcon = document.Root.ToString(SaveOptions.DisableFormatting);
         }
     }
 }

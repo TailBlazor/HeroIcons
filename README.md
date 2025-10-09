@@ -8,6 +8,10 @@ The full icon pack can be previewed here: [HeroIcons.com](https://heroicons.com)
 
 This pack allows you to modify: size, stroke(colour), stroke width, width and height, and style (outlined or solid) for all the icons in an easy package with easy searching of available icons.
 
+> **New in .NET 9**
+>
+> The component library now targets .NET 9 and embeds the SVG assets directly in the assembly. This allows `TailBlazorHeroIcon` to render during Blazor's new `InteractiveAuto` mode without making HTTP requests so it works seamlessly in both server-side and client-side rendering scenarios.
+
 
 ![Nuget](https://img.shields.io/nuget/v/TailBlazor.HeroIcons.svg)
 
@@ -48,10 +52,10 @@ By default you don't need to include anything but the `Icon` parameter. However 
 
 Parameter | Default Value
 --- | ---
-`Width` | `64`
-`Height` | `64`
+`Width` | `24`
+`Height` | `24`
 `StrokeWidth` | `2`
-`Class` | `text-black`
+`Class` | inherits the current text colour (e.g. `text-slate-500`)
 `IconStyle` | `IconStyle.Outline`
 `EnableComments` | `false`
 
